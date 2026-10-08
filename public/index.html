@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>不谢牌 · No Thanks!</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section id="homeView" class="view active">
+      <div class="cover-band">
+        <div>
+          <p class="eyebrow">NO THANKS! · LAN TABLE</p>
+          <h1>不谢牌</h1>
+          <p class="lead">一张牌，很多犹豫。把标记留在手里，还是把牌收下？</p>
+          <button id="rulesButton" class="ghost cover-rules-button">查看游戏规则</button>
+        </div>
+        <div class="cover-card" aria-label="不谢牌示意牌">
+          <span>NO</span><strong>27</strong><small>THANKS!</small>
+        </div>
+      </div>
+      <section class="panel nickname-panel"><label>你的昵称<input id="playerName" maxlength="24" placeholder="例如：Mojo" autocomplete="nickname"></label><p class="muted">昵称会保存在当前浏览器会话中，可随时修改。</p></section>
+      <div class="home-grid">
+        <section class="panel form-panel">
+          <div class="panel-heading"><span>创建房间</span><small>3–5 人</small></div>
+          <label>房间名称<input id="createRoomName" maxlength="40" placeholder="周五晚上的牌局"></label>
+          <button id="createRoomButton" class="primary">创建并进入房间</button>
+        </section>
+        <section class="panel rooms-panel">
+          <div class="panel-heading"><span>搜索房间</span><button id="refreshRoomsButton" class="ghost">刷新</button></div>
+          <div id="roomList" class="room-list"><p class="muted">正在读取房间…</p></div>
+        </section>
+      </div>
+      <section class="panel replay-import-panel">
+        <div><div class="panel-heading"><span>离线回放</span><small>导入已导出的 JSON 记录</small></div><p class="muted">无需加入原房间；导入后可逐步、自动或跳至下一次收牌进行回放。</p></div>
+        <label for="importReplayInput" class="secondary file-button">上传 JSON 并回放</label><input id="importReplayInput" type="file" accept="application/json,.json" hidden>
+      </section>
+      <p id="homeMessage" class="message" role="status"></p>
+    </section>
+
+    <section id="rulesView" class="view">
+      <header class="topbar"><div><p class="eyebrow">HOW TO PLAY</p><h2>游戏规则</h2></div><button id="rulesHomeButton" class="ghost">返回大厅</button></header>
+      <section class="panel rules-panel">
+        <div class="rules-grid">
+          <section><p class="eyebrow">1 · 准备</p><h3>每人 11 枚标记</h3><p>3–5 人游戏。每位玩家把自己的 11 枚标记藏在手中；从 3–35 的 33 张牌中，暗置移除 9 张，剩余 24 张组成牌库。</p></section>
+          <section><p class="eyebrow">2 · 开始</p><h3>翻开第一张牌</h3><p>随机选一名起始玩家翻开牌库顶牌。他可以收下这张牌，或拒收：把 1 枚自己的标记放到牌旁。标记用完后不能拒收，只能收牌。</p></section>
+          <section><p class="eyebrow">3 · 同一张牌继续传</p><h3>拒收不换牌</h3><p>有人拒收后，仍是这张牌和所有已放在牌旁的标记，按顺时针交给下一位玩家决定。玩家可以不断拒收，直到有人选择收下。</p></section>
+          <section><p class="eyebrow">4 · 收牌后</p><h3>拿走牌和全部标记</h3><p>收牌者将当前牌放到自己面前，并收回牌旁全部标记。然后由他翻开下一张牌，且仍由他先决定是否收下这张新牌。</p></section>
+          <section><p class="eyebrow">5 · 公开与隐藏</p><h3>牌公开，标记隐藏</h3><p>所有已收的牌面朝上，供所有人查看；连续数字的牌应叠放，非连续牌分开摆放。只有自己的剩余标记数可见。</p></section>
+          <section><p class="eyebrow">6 · 结束与计分</p><h3>分数越低越好</h3><p>最后一张牌被收下后结算。每组连续牌只算其中最小的牌，所有牌组相加后减去剩余标记。例：<strong>4、14、30</strong> 三组牌且有 <strong>10</strong> 枚标记，得分为 <strong>4 + 14 + 30 − 10 = 38</strong>；最低分获胜。</p></section>
+        </div>
+      </section>
+    </section>
+
+    <section id="roomView" class="view">
+      <header class="topbar"><div><p class="eyebrow">ROOM</p><h2 id="roomTitle">房间</h2></div><button id="backHomeButton" class="ghost">返回大厅</button></header>
+      <div class="room-layout">
+        <section class="panel room-panel">
+          <div class="panel-heading"><span>玩家</span><span id="roomCount" class="count"></span></div>
+          <div id="playerList" class="player-list"></div>
+          <div class="room-actions"><button id="readyButton" class="secondary">准备</button><label class="bot-level-label">人机等级<select id="botLevelSelect"><option value="beginner">初级</option><option value="intermediate">中级</option><option value="advanced">高级</option></select></label><button id="addBotButton" class="secondary">加入人机</button><button id="startGameButton" class="primary">开始游戏</button><p id="roomMessage" class="message" role="status"></p></div>
+        </section>
+        <aside class="rules-note"><p class="eyebrow">QUICK RULES</p><h3>把最低分留给自己</h3><p>连续牌只算一张，取连续段最低值；剩余标记每枚减 1 分。牌库耗尽后，分数最低者获胜。</p><button id="roomRulesButton" class="ghost">查看完整规则</button></aside>
+      </div>
+    </section>
+
+    <section id="gameView" class="view">
+      <section class="game-table" aria-label="游戏牌桌">
+        <div class="table-meta"><div class="game-context"><strong id="gameRoomTitle">不谢牌局</strong><span id="deckStatus" class="deck-status"></span></div><span id="turnLabel"></span></div>
+        <div class="table-felt">
+          <div id="tableSeats" class="table-seats" aria-label="玩家座位"></div>
+          <div class="table-center">
+            <div class="card-stage" aria-label="当前牌"><span class="card-caption">当前牌</span><strong id="currentCard">?</strong></div>
+            <div class="pot-stack" aria-label="牌旁标记"><span class="token-icon">●</span><strong id="potCount">0</strong><span>牌旁标记</span></div>
+          </div>
+        </div>
+        <div class="game-bottom-row"><aside id="selfPanel" class="self-panel" aria-label="你的信息"></aside><div class="action-dock"><div class="action-row"><button id="passButton" class="secondary">拒收，放置 1 个标记</button><button id="takeButton" class="primary">收下这张牌</button><button id="quickChatToggle" class="secondary quick-chat-toggle" type="button" aria-expanded="false" aria-controls="quickChatPicker">说一句</button></div><div id="quickChatPicker" class="quick-chat-picker" aria-label="快捷语句" hidden></div><div id="quickChatFeed" class="quick-chat-feed" aria-live="polite" hidden></div><p id="gameMessage" class="message" role="status"></p><div id="tableEvent" class="table-event" aria-live="polite"></div></div></div>
+      </section>
+    </section>
+
+    <section id="resultView" class="view">
+      <header class="topbar"><div><p id="resultEyebrow" class="eyebrow">FINAL SCORES</p><h2 id="resultTitle">本局结果</h2></div><div class="result-actions"><button id="exportRecordButton" class="ghost">导出 JSON</button><button id="showReplayButton" class="secondary">回放对局</button><button id="resultHomeButton" class="ghost">回到原房间</button></div></header>
+      <section class="panel result-panel"><p id="winnerLabel" class="winner-label"></p><div id="resultTable"></div><section id="replayPanel" class="replay-panel" hidden><div class="panel-heading"><span>对局回放</span><span id="replayStepLabel" class="count"></span></div><div class="replay-controls"><button id="replayPreviousButton" class="secondary">上一步</button><button id="replayNextButton" class="secondary">下一步</button><button id="replayJumpTakeButton" class="secondary">大跳至下次收牌</button><button id="replayPlayButton" class="primary">自动播放</button><label class="replay-speed-label">倍速<select id="replaySpeedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label><button id="replayDeckButton" class="ghost">查看牌山</button></div><p id="replayEvent" class="replay-event" aria-live="polite"></p><div id="replayBoard" class="replay-board"></div><section id="replayDeckPanel" class="replay-deck-panel" hidden><div class="panel-heading"><span>牌山</span><span id="replayDeckStatus" class="count"></span></div><div id="replayDeck" class="replay-deck"></div></section></section></section>
+    </section>
+  </main>
+  <dialog id="rulesDialog" class="rules-dialog" aria-labelledby="rulesDialogTitle">
+    <div class="rules-dialog-inner">
+      <header class="rules-dialog-head"><div><p class="eyebrow">HOW TO PLAY</p><h2 id="rulesDialogTitle">游戏规则</h2></div><form method="dialog"><button class="ghost">关闭</button></form></header>
+      <div id="rulesDialogContent"></div>
+    </div>
+  </dialog>
+  <script src="/assets/quick-chat.js" defer></script>
+  <script src="/assets/table-layout.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

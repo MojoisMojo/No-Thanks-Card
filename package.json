@@ -1,0 +1,15 @@
+{
+  "name": "no-thanks-card-lan",
+  "version": "0.1.0",
+  "private": true,
+  "description": "No Thanks! LAN game with browser and CLI clients",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "cli": "node cli.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
